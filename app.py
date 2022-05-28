@@ -1,7 +1,7 @@
-import datetime
 import sqlite3
-from abc import ABC, abstractmethod
+import datetime
 
+from abc import ABC, abstractmethod
 from contextlib import contextmanager
 
 
@@ -37,13 +37,12 @@ class UserSession(ABC):
     def _check_username(self, username) -> None:
         pass
 
+    @abstractmethod
+    def start(self) -> None:
+        pass
+
 
 class Register(UserSession):
-    @classmethod
-    def register(cls, username, password):
-        with DatabaseHandler().database_connected() as db_cursor:
-            db_cursor.execute('INSERT INTO users VALUES(?,?,?,?)',
-                              (None, username, password, str(datetime.date.today())))
 
     def __int__(self):
         self.username = None
@@ -56,7 +55,12 @@ class Register(UserSession):
         return not (username in usernames)
 
     def _set_username(self):
-        self.username = str(input("Enter your Username: "))
+        username_input = str(input("Enter your Username: "))
+        if self._check_username(username_input):
+            self.username = username_input
+        else:
+            print("this user exists!!!")
+            self._set_username()
 
     def _set_password(self):
         self.password = str(input("Enter your Password: "))
@@ -64,6 +68,16 @@ class Register(UserSession):
     def _set_credentials(self):
         self._set_username()
         self._set_password()
+
+    def store_data(self):
+        with DatabaseHandler().database_connected() as db_cursor:
+            db_cursor.execute('INSERT INTO users VALUES(?,?,?,?)',
+                              (None, self.username, self.password, str(datetime.date.today())))
+        print("Welcome yl 7beeb")
+
+    def start(self):
+        self._set_credentials()
+        self.store_data()
 
 
 class Login(UserSession):
@@ -103,5 +117,4 @@ class Login(UserSession):
         self.login()
 
 
-# DatabaseHandler().register("HASAN", "1234")
-
+Register().start()
