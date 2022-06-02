@@ -1,10 +1,12 @@
-[[source]]
+[[spiource]]
 url = "https://pypi.org/simple"
 verify_ssl = true
 name = "pypi"
 
 [packages]
 redis = "*"
+pillow = "*"
+async-timeout = "*"
 
 [dev-packages]
 

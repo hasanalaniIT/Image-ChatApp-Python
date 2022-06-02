@@ -3,6 +3,7 @@ import datetime
 from abc import ABC, abstractmethod
 
 from database_connection import DatabaseHandler
+from message_session import MessageSession
 
 
 class UserSession(ABC):
@@ -81,6 +82,9 @@ class Login(UserSession):
     def _set_username(self) -> None:
         self.username = str(input("Enter your Username: "))
 
+    def get_username(self) -> str:
+        return self.username
+
     def _set_password(self) -> None:
         self.password = str(input("Enter your Password: "))
 
@@ -95,6 +99,8 @@ class Login(UserSession):
                 "('',)'")
         if password == db_password:
             print("Login successfully")
+            MessageSession(username).start()
+
         else:
             user_option = input(
                 "user or password does not match\n to try again type anything\n to register a new account type (2)\n: ")

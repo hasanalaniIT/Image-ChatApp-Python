@@ -13,8 +13,8 @@ class App:
         else:
             self.start()
 
-    def exit_menu(self):
-        return self.start()
+    # def exit_menu(self):
+    #     return self.start()
 
 
 if __name__ == '__main__':
