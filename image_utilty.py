@@ -17,7 +17,7 @@ class ImageHandler:
             return encoded_str
 
     @classmethod
-    def decode(cls, encoded_img):
+    def decode(cls, encoded_img) -> Any:
         if encoded_img:
             image_64_decode = base64.b64decode(cls.encode(encoded_img))
             # create a writable image and write the decoding result
@@ -44,11 +44,9 @@ class ImageHandler:
         else:
             return filename
 
-
 # if __name__ == '__main__':
 #     # ImageHandler().open_decoded(ImageHandler().decode(ImageHandler().select()))
 #     object_ob = ImageHandler()
 #     img = object_ob.encode("Pictures/test.jpeg")
 #     img = object_ob.decode(img)
 #     object_ob.open_decoded(img)
-

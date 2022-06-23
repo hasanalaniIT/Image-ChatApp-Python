@@ -8,20 +8,24 @@ from threading import Thread
 
 from database_connection import DatabaseHandler
 from image_utilty import *
-from user_session import *
+
+
+# from user_session import *
 
 
 class MessageHandler:
+    redis_client = None
+    channels = None
 
-    redis_client = redis.Redis(host='localhost', port=6379, password='hasan99')
-    channels = {
-        'private': DatabaseHandler().get_users(),
-        'public': ['group1'],
-    }
+    def __init__(self):
+        self.redis_client = redis.Redis(host='localhost', port=6379, password='hasan99')
+        self.channels = {
+            'private': DatabaseHandler().get_users(),
+            'public': ['group1'],
+        }
 
     @classmethod
     def get_private_channels(cls):
-        cls.update_channels()
         return cls.channels['private']
 
     @classmethod
@@ -58,7 +62,7 @@ class PrivateMessageSubscriber(Thread, MessageHandler):
         self.start()
 
     def run(self) -> None:
-        redis_pubsub = MessageHandler.redis_client.pubsub()
+        redis_pubsub = MessageHandler().redis_client.pubsub()
         redis_pubsub.subscribe(self.user_channel)
         while True:
             redis_message = redis_pubsub.get_message()
@@ -91,7 +95,7 @@ class PublicMessageSubscriber(Thread, MessageHandler):
         self.start()
 
     def run(self) -> None:
-        redis_pubsub = MessageHandler.redis_client.pubsub()
+        redis_pubsub = MessageHandler().redis_client.pubsub()
         redis_pubsub.subscribe(self.recipient)
         image_handler = ImageHandler()
         while True:
@@ -109,7 +113,7 @@ class PublicMessageSubscriber(Thread, MessageHandler):
                     time.sleep(0.01)
 
 
-class MessagePublisher():
+class MessagePublisher:
     def __init__(self, username: str, recipient: str):
 
         self.username = username
@@ -125,7 +129,7 @@ class MessagePublisher():
             recipient: the message recipient.
         """
         json_data = json.dumps(data)
-        MessageHandler.redis_client.publish(recipient, json_data)
+        MessageHandler().redis_client.publish(recipient, json_data)
 
     def start(self) -> None:
         """ Listens continuously to user messages and send them them to the desired destination.
@@ -151,6 +155,7 @@ class MessageSession:
     def __init__(self, username):
         self.username = username
         self.recipient = None
+        MessageHandler.update_channels()
 
     def get_user_info(self) -> None:
         self.recipient: str = str(input("Enter your Recipient: "))
@@ -186,3 +191,4 @@ class MessageSession:
             self.start_messaging_session()
 
 
+TODO: "UPDATE PROJECT structure for update channels method"

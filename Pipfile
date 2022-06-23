@@ -4,9 +4,9 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-redis = "*"
-pillow = "*"
-async-timeout = "*"
+redis = "==4.3.3"
+pillow = "==9.1.1"
+async-timeout = "==4.0.2"
 
 [dev-packages]
 

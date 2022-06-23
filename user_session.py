@@ -30,7 +30,7 @@ class UserSession(ABC):
 
 class Register(UserSession):
 
-    def __int__(self):
+    def __init__(self):
         self.username = None
         self.password = None
 
@@ -69,12 +69,13 @@ class Register(UserSession):
 
 
 class Login(UserSession):
-    def _check_username(self, username) -> None:
-        pass
 
-    def __int__(self):
+    def __init__(self):
         self.username = None
         self.password = None
+
+    def _check_username(self, username) -> None:
+        pass
 
     def login(self) -> None:
         self.authenticate(self.username, self.password)
